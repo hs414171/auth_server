@@ -15,10 +15,12 @@ const User = mongoose.Schema({
     },
    
     mobile:{
-        type:Number
+        type : Number,
+        required :true
     },
     name:{
-        type:String
+        type : String,
+        required : true
     }
 
     
@@ -27,7 +29,7 @@ User.pre('save',async function(next){
     try{
         const hashedPassword = await bcrypt.hash(this.password,10)
         this.password = hashedPassword
-        
+
     }
     catch(e){
         next(e)

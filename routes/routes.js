@@ -1,9 +1,19 @@
+require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
+const Joi = require('@hapi/joi')
+const jwt = require('jsonwebtoken')
 
+const schema = Joi.object({
+    name:Joi.string().min(6).required(),
+    username:Joi.string().min(6).required(),
+    password:Joi.string().min(6).required(),
+    mobile:Joi.number()
+}
+)
 
 router.get('/get-users', async (req,res)=>{
     try{
@@ -38,6 +48,8 @@ router.post('/login', async (req, res)=>{
         })
 
     })
+    
+    
 
 });
     
@@ -47,6 +59,10 @@ router.post('/login', async (req, res)=>{
 
 
 router.post('/reg_user', async (req, res)=>{
+    const {error} = schema.validate(req.body)
+    if (error) return res.status(400).send(error.details[0].message)
+    
+
 
     const username = req.body.username
     const users = await User.find()
