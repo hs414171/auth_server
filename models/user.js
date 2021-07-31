@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 
 
@@ -12,35 +13,26 @@ const User = mongoose.Schema({
         type : String,
         required : true
     },
-    latitude:{
-        type : Number,
-        default : 0.00
-    },
-    longitude:{
-        type : Number,
-        default : 0.00
-    },
-    code:{
-        type : String,
-        
-        
-    },
+   
     mobile:{
         type:Number
+    },
+    name:{
+        type:String
     }
 
     
 })
 User.pre('save',async function(next){
     try{
-        const key_ran = require('crypto').randomBytes(3).toString('hex')
-        this.code = key_ran
-        next()
-
+        const hashedPassword = await bcrypt.hash(this.password,10)
+        this.password = hashedPassword
+        
     }
-    catch(error){
-        next(error)
+    catch(e){
+        next(e)
     }
+    
 })
 
 module.exports = mongoose.model('user', User);

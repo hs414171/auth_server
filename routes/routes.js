@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 
 router.get('/get-users', async (req,res)=>{
@@ -17,35 +18,35 @@ router.post('/login', async (req, res)=>{
 
     var username = req.body.username;
     var password = req.body.password;
+    User.findOne({ username })
+    .then(user => {
+        
+        if (!user) return res.status(400).json({ msg: "User not exist" })
 
-    let state = false;
+        
+        bcrypt.compare(password, user.password, (err, data) => {
+            
+            if (err) throw err
 
-    if(username.length != 0 && password.length != 0){
-        // BOTH USERNAME AND PASSWORD ARE PRESENT
-        const users = await User.find();
-        let currentUser;
-        users.forEach((user)=>{
-            // IF USERNAME IS CORRECT
-            if(username === user.username){
-                // STORE USER(FROM DATABASE) WHO IS TRYING TO LOG IN
-                currentUser = user;
-                // IF PASSWORD IS CORRECT
-                if(password === currentUser.password){
-                    state = true;
-                }
+            
+            if (data) {
+                return res.status(200).json({ msg: "Login success" })
+            } else {
+                return res.status(401).json({ msg: "Invalid credential" })
             }
-        });
-    }
 
-    // IF BOTH USERNAME AND PASSWORD ENTERED WERE CORRECT STATE ---> true
-    if(state){
-        res.status(203).json({message: `${username} logged in`});
-    }else{
-        res.status(410).json({message: 'invalid credentials'});
-    }
+        })
+
+    })
+
 });
+    
 
-router.post('/reg/user', async (req, res)=>{
+    
+    
+
+
+router.post('/reg_user', async (req, res)=>{
 
     const username = req.body.username
     const users = await User.find()
@@ -66,6 +67,7 @@ router.post('/reg/user', async (req, res)=>{
             username: req.body.username,
             password: req.body.password,
             mobile: req.body.mobile,
+            name: req.body.name
     })   
         try{
             const newUser = await user.save()
@@ -76,6 +78,24 @@ router.post('/reg/user', async (req, res)=>{
     }
     
 });
+
+router.patch('/updateInfo',async (req,res)=>{
+    const query = {username:req.body.username}
+    const update_doc = {
+        $set:{
+            "password" : req.body.password,
+            "name" : req.body.name,
+            "mobile" : req.body.mobile
+        }
+    }
+    try{
+        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
+        res.status(221).json({message:"Updated Succesfully",doc:result})
+    }
+    catch(e){
+        res.status(421).json({message : error.message})
+    }
+})
 
 
 
