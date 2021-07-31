@@ -14,7 +14,7 @@ const { valid } = require('@hapi/joi')
 router.get('/get-users', async (req,res)=>{
     try{
         const userData =  await User.find()
-        res.send(userData)
+        res.json(userData)
     }catch(error){
         res.status(500).json({message: error.message})
     }
