@@ -14,6 +14,10 @@ var options = {
   }
   app.use(cors(options));
 
+app.get('/',(req,res)=>{
+    res.send("Hello World")
+})
+
 
 mongoose.connect(
     process.env.DATABASE_URI,
