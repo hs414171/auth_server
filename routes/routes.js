@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt')
 
 const jwt = require('jsonwebtoken')
 const { registerValidation , loginValidation } = require('../validation')
+const { valid } = require('@hapi/joi')
 
 
 
@@ -24,28 +25,15 @@ router.post('/login', async (req, res)=>{
     
     if (error) return res.status(400).send(error.details[0].message)
 
-    var username = req.body.username;
-    var password = req.body.password;
-    User.findOne({ username })
-    .then(user => {
-        
-        if (!user) return res.status(400).json({ msg: "User not exist" })
-
-        
-        bcrypt.compare(password, user.password, (err, data) => {
-            
-            if (err) throw err
-
-            
-            if (data) {
-                return res.status(200).json({ msg: "Login success" })
-            } else {
-                return res.status(401).json({ msg: "Invalid credential" })
-            }
-
-        })
-
-    })
+    const user = await User.findOne({username : req.body.username})
+    if (!user) return res.status(400).send("Email not found")
+    
+    const validPass = await bcrypt.compare(req.body.password,user.password)
+    if (!validPass) return res.status(400).send("Password not found")
+    const token = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET)
+    res.header("auth-token",token).send(token)
+    res.send("Login successfull")
+    
     
     
 
