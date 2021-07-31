@@ -81,6 +81,8 @@ router.post('/reg_user', async (req, res)=>{
 
 router.patch('/updateInfo',async (req,res)=>{
     const query = {username:req.body.username}
+    req.body.password = await bcrypt.hash(req.body.password, 8);
+    
     const update_doc = {
         $set:{
             "password" : req.body.password,
