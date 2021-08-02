@@ -8,15 +8,16 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { registerValidation , loginValidation } = require('../validation')
 const { valid } = require('@hapi/joi')
+const verify = require('./verifytoken')
 
 
 
-router.get('/get-users', async (req,res)=>{
+router.get('/get-users',verify, async (req,res)=>{
     try{
         const userData =  await User.find()
-        res.json(userData)
+        res.send(userData)
     }catch(error){
-        res.status(500).json({message: error.message})
+        res.status(500)
     }
 })
 
