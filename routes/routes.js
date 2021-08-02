@@ -72,7 +72,8 @@ router.post('/reg_user', async (req, res)=>{
             username: req.body.username,
             password: req.body.password,
             mobile: req.body.mobile,
-            name: req.body.name
+            name: req.body.name,
+            email: req.body.email
     })   
         try{
             const newUser = await user.save()
@@ -92,7 +93,8 @@ router.patch('/updateInfo',async (req,res)=>{
         $set:{
             "password" : req.body.password,
             "name" : req.body.name,
-            "mobile" : req.body.mobile
+            "mobile" : req.body.mobile,
+            "email": req.body.email
         }
     }
     try{

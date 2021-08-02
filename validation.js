@@ -4,7 +4,9 @@ const registerValidation = data => {
     name:Joi.string().min(6).required(),
     username:Joi.string().min(6).required(),
     password:Joi.string().min(6).required(),
-    mobile:Joi.number()
+    mobile:Joi.number(),
+    email:Joi.string().min(7).email()
+    
 }
     )
 return schema.validate(data)

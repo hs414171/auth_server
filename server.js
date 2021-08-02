@@ -14,7 +14,7 @@ var options = {
   }
   app.use(cors(options));
 
-app.get('/welcome',(req,res)=>{
+app.get('/',(req,res)=>{
     res.send("Hello World")
 })
 
