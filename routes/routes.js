@@ -118,16 +118,89 @@ router.post('/reg_user', async (req, res)=>{
     
 });
 
-router.patch('/updateInfo',async (req,res)=>{
+router.patch('/updatePassword',async (req,res)=>{
     const query = {username:req.body.username}
     req.body.password = await bcrypt.hash(req.body.password, 8);
     
     const update_doc = {
         $set:{
             "password" : req.body.password,
-            "name" : req.body.name,
-            "mobile" : req.body.mobile,
-            "email": req.body.email,
+            
+        }
+    }
+    try{
+        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
+        res.status(221).json({message:"Updated Succesfully",doc:result})
+    }
+    catch(e){
+        res.status(421).json({message : error.message})
+    }
+})
+router.patch('/updateName',async (req,res)=>{
+    const query = {username:req.body.username}
+    
+    
+    const update_doc = {
+        $set:{
+
+            "name" : req.body.name
+            
+        }
+    }
+    try{
+        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
+        res.status(221).json({message:"Updated Succesfully",doc:result})
+    }
+    catch(e){
+        res.status(421).json({message : error.message})
+    }
+})
+router.patch('/updateNumber',async (req,res)=>{
+    const query = {username:req.body.username}
+   
+    
+    const update_doc = {
+        $set:{
+            
+           
+            "mobile" : req.body.mobile
+            
+        }
+    }
+    try{
+        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
+        res.status(221).json({message:"Updated Succesfully",doc:result})
+    }
+    catch(e){
+        res.status(421).json({message : error.message})
+    }
+})
+router.patch('/updateEmail',async (req,res)=>{
+    const query = {username:req.body.username}
+    
+    
+    const update_doc = {
+        $set:{
+            
+            "email": req.body.email
+            
+        }
+    }
+    try{
+        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
+        res.status(221).json({message:"Updated Succesfully",doc:result})
+    }
+    catch(e){
+        res.status(421).json({message : error.message})
+    }
+})
+router.patch('/updateUsername',async (req,res)=>{
+    const query = {username:req.body.username}
+    
+    
+    const update_doc = {
+        $set:{
+            
             "username": req.body.usernamech
         }
     }
@@ -147,6 +220,7 @@ router.get('/verification/:token2',(req,res)=>{
         res.send("invalid token")
     }
 })
+
 
 
 module.exports = router
