@@ -91,21 +91,25 @@ router.post('/reg_user', async (req, res)=>{
             console.log(token2)
             
             
-            const url = `https://localhost:300/api/user/verification/${token2}`
+            const url = `http://localhost:3000/api/user/verification/${token2}`
             const options = {
                 from : process.env.EMAIL_ADDRESS,
                 to : req.body.email,
                 subject : "VERIFY YOUR ACCOUNT",
                 html : `
-                <h2> Click on the given link to verify your account </h2>
-                <a href = "${url}"> ${url}</a>
+                Click on the given link to verify your account: <a href = "${url}"> ${url}</a>
 
                 `
             }
-            transportIt.sendMail(options,(error)=>{
-                res.json({message:error.message})
+            transportIt.sendMail(options,function(error,info){
+                if (error){
+                    console.log(error)
+                }
+                else{
+                    console.log("Email Sent"+info.response)
+                }
             })
-            if (!verified) return res.send("Email isnt verified")
+            
             
         }catch(error){
             res.status(400).json({message: error.message})
