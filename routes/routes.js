@@ -1,14 +1,16 @@
 require('dotenv').config()
 const express = require('express')
 const router = express.Router()
-
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-
 const jwt = require('jsonwebtoken')
 const { registerValidation , loginValidation } = require('../validation')
 const { valid } = require('@hapi/joi')
 const verify = require('./verifytoken')
+const { request } = require('express')
+const transportIt = require('../nodmailer')
+const verified = 0
+
 
 
 
@@ -31,9 +33,15 @@ router.post('/login', async (req, res)=>{
     
     const validPass = await bcrypt.compare(req.body.password,user.password)
     if (!validPass) return res.status(400).send("Password not found")
-    const token = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET)
-    res.header("auth-token",token).send(token)
-    res.send("Login successfull")
+    
+    
+    if (verified === 0) return res.send("email not confirmed")
+    else{
+        res.send("Login successfull")
+        const token = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET)
+    
+        console.log(token)
+    }
     
     
     
@@ -78,6 +86,27 @@ router.post('/reg_user', async (req, res)=>{
         try{
             const newUser = await user.save()
             res.status(201).json({message: 'new user created', user: newUser})
+            
+            const token2 = jwt.sign({email:req.body.email},process.env.EMAIL_SECRET)
+            console.log(token2)
+            
+            
+            const url = `https://localhost:300/api/user/verification/${token2}`
+            const options = {
+                from : process.env.EMAIL_ADDRESS,
+                to : req.body.email,
+                subject : "VERIFY YOUR ACCOUNT",
+                html : `
+                <h2> Click on the given link to verify your account </h2>
+                <a href = "${url}"> ${url}</a>
+
+                `
+            }
+            transportIt.sendMail(options,(error)=>{
+                res.json({message:error.message})
+            })
+            if (!verified) return res.send("Email isnt verified")
+            
         }catch(error){
             res.status(400).json({message: error.message})
         }
@@ -94,7 +123,8 @@ router.patch('/updateInfo',async (req,res)=>{
             "password" : req.body.password,
             "name" : req.body.name,
             "mobile" : req.body.mobile,
-            "email": req.body.email
+            "email": req.body.email,
+            "username": req.body.usernamech
         }
     }
     try{
@@ -105,5 +135,14 @@ router.patch('/updateInfo',async (req,res)=>{
         res.status(421).json({message : error.message})
     }
 })
+router.get('/verification/:token2',(req,res)=>{
+    if (jwt.verify(req.params.token2,process.env.EMAIL_SECRET)){
+        verified = 1
+    }
+    else{
+        res.send("invalid token")
+    }
+})
+
 
 module.exports = router
