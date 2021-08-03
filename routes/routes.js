@@ -9,7 +9,7 @@ const { valid } = require('@hapi/joi')
 const verify = require('./verifytoken')
 const { request } = require('express')
 const transportIt = require('../nodmailer')
-const verified = 0
+let verified = false
 
 
 
@@ -35,7 +35,7 @@ router.post('/login', async (req, res)=>{
     if (!validPass) return res.status(400).send("Password not found")
     
     
-    if (verified === 0) return res.send("email not confirmed")
+    if (verified === false) return res.send("email not confirmed")
     else{
         res.send("Login successfull")
         const token = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET)
@@ -137,7 +137,7 @@ router.patch('/updateInfo',async (req,res)=>{
 })
 router.get('/verification/:token2',(req,res)=>{
     if (jwt.verify(req.params.token2,process.env.EMAIL_SECRET)){
-        verified = 1
+        verified = true
     }
     else{
         res.send("invalid token")
