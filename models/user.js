@@ -25,6 +25,10 @@ const User = mongoose.Schema({
     email:{
         type : String,
         required : true
+    },
+    verified:{
+        type: Boolean,
+        default:false
     }
 
     

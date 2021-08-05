@@ -35,12 +35,11 @@ router.post('/login', async (req, res)=>{
     if (!validPass) return res.status(400).send("Password not found")
     
     
-    if (verified === false) return res.send("email not confirmed")
+    if (!user.verified) return res.send("email not confirmed")
     else{
-        res.send("Login successfull")
+        
         const token = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET)
-    
-        console.log(token)
+        res.json({token})
     }
     
     
@@ -87,7 +86,7 @@ router.post('/reg_user', async (req, res)=>{
             const newUser = await user.save()
             res.status(201).json({message: 'new user created', user: newUser})
             
-            const token2 = jwt.sign({email:req.body.email},process.env.EMAIL_SECRET)
+            const token2 = jwt.sign({_id:newUser._id},process.env.EMAIL_SECRET)
             console.log(token2)
             
             
@@ -98,7 +97,6 @@ router.post('/reg_user', async (req, res)=>{
                 subject : "VERIFY YOUR ACCOUNT",
                 html : `
                 Click on the given link to verify your account: <a href = "${url}"> ${url}</a>
-
                 `
             }
             transportIt.sendMail(options,function(error,info){
@@ -212,13 +210,25 @@ router.patch('/updateUsername',async (req,res)=>{
         res.status(421).json({message : error.message})
     }
 })
-router.get('/verification/:token2',(req,res)=>{
-    if (jwt.verify(req.params.token2,process.env.EMAIL_SECRET)){
-        verified = true
-    }
-    else{
-        res.send("invalid token")
-    }
+router.get('/verification/:token2',async(req,res)=>{
+    try {
+        const user = jwt.verify(req.params.token2, process.env.EMAIL_SECRET)
+        
+        const query = {_id:user._id}
+        const update_doc = {
+            $set:{
+                
+                "verified": true
+            }
+        }
+        const result = await User.findByIdAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
+        res.status(221).json({message:"Verified"})
+        
+
+        
+      }catch (e) {
+        res.send('error');
+      }
 })
 
 
