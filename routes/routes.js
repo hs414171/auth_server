@@ -11,7 +11,22 @@ const { request } = require('express')
 const transportIt = require('../nodmailer')
 let verified = false
 
+router.post('/verifyRefresh',(req,res)=>{
+    const refreshToken = req.body.token
+    if(!refreshToken){
+        return res.json({message:"invalid access"})
+    }
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,(error,user)=>{
+        if (!error){
+            const accessToken = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"2m"})
+            return res.json({accessToken})
+        }
+        else{
+            return res.json({message:"invalid access"})
+        }
+    })
 
+})
 
 
 router.get('/get-users',verify, async (req,res)=>{
@@ -38,8 +53,9 @@ router.post('/login', async (req, res)=>{
     if (!user.verified) return res.send("email not confirmed")
     else{
         
-        const token = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET)
-        res.json({token})
+        const accessToken = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"2m"})
+        const refreshToken = jwt.sign({_id : user._id},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"7d"})
+        res.json({accessToken,refreshToken})
     }
     
     
