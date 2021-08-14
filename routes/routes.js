@@ -32,7 +32,7 @@ router.post('/verifyRefresh',(req,res)=>{
 router.get('/get-users',verify, async (req,res)=>{
     try{
         const userData =  await User.find()
-        res.send(userData)
+        res.json({userData})
     }catch(error){
         res.status(500)
     }
@@ -246,6 +246,7 @@ router.get('/verification/:token2',async(req,res)=>{
         res.send('error');
       }
 })
+
 
 
 
