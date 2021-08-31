@@ -9,7 +9,7 @@ const { valid } = require('@hapi/joi')
 const verify = require('./verifytoken')
 const { request } = require('express')
 const transportIt = require('../nodmailer')
-let verified = false
+
 
 router.post('/verifyRefresh',(req,res)=>{
     const refreshToken = req.body.token
