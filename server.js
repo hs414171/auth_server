@@ -7,13 +7,15 @@ const user_routes = require('./routes/routes')
 const cors = require('cors')
 const port = process.env.PORT || 3000
 const app = express()
-var options = {
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
-  }
-  app.use(cors(options));
+// var options = {
+//     "origin": "*",
+//     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     "preflightContinue": false,
+//     "optionsSuccessStatus": 204
+//   }
+  app.use(cors());
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 app.get('/',(req,res)=>{
     res.send("Hello World")

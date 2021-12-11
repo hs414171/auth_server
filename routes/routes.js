@@ -45,13 +45,16 @@ router.post('/login', async (req, res)=>{
     
     const validPass = await bcrypt.compare(req.body.password,user.password)
     if (!validPass) return res.status(400).send("Password not found")
+
     
     
     if (!user.verified) return res.send("email not confirmed")
     else{
+        
         const accessToken = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"2m"})
         const refreshToken = jwt.sign({_id : user._id},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"7d"})
         res.json({accessToken,refreshToken})
+        return res.status(201)
     }
     
     
