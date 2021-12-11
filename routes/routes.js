@@ -41,21 +41,17 @@ router.get('/get-users',verify, async (req,res)=>{
 router.post('/login', async (req, res)=>{
 
     const user = await User.findOne({username : req.body.username})
-    if (!user) return res.status(400).send("Email not found")
-    
-    const validPass = await bcrypt.compare(req.body.password,user.password)
-    if (!validPass) return res.status(400).send("Password not found")
 
-    
-    
-    if (!user.verified) return res.send("email not confirmed")
-    else{
-        
-        const accessToken = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"2m"})
-        const refreshToken = jwt.sign({_id : user._id},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"7d"})
-        res.json({accessToken,refreshToken})
-        return res.status(201)
+    if(!user){
+        res.status(404).send("no such user exists")
+    }else{
+        if(user.password === req.body.password){
+            res.status(200).send("logged in")
+        }else{
+            res.status(403).send("wrong password")
+        }
     }
+    console.log(req.body.username,req.body.password)
     
     
     
@@ -117,6 +113,7 @@ router.post('/reg_user', async (req, res)=>{
                     console.log("Email Sent"+info.response)
                 }
             })
+            
             
             
         }catch(error){
