@@ -52,10 +52,7 @@ router.post('/login', async (req, res)=>{
             res.status(403).send("wrong password")
         }
     }
-    console.log(req.body.username,req.body.password
-    
-    // const validPass = await bcrypt.compare(req.body.password,user.password)
-    
+    console.log(req.body.username,req.body.password)
     
     
     
