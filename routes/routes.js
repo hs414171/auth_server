@@ -87,8 +87,6 @@ router.post('/reg_user', async (req, res)=>{
         const user = new User({
             username: req.body.username,
             password: req.body.password,
-            mobile: req.body.mobile,
-            name: req.body.name,
             email: req.body.email
     })   
         try{
@@ -143,45 +141,8 @@ router.patch('/updatePassword',async (req,res)=>{
         res.status(421).json({message : error.message})
     }
 })
-router.patch('/updateName',async (req,res)=>{
-    const query = {username:req.body.username}
-    
-    
-    const update_doc = {
-        $set:{
 
-            "name" : req.body.name
-            
-        }
-    }
-    try{
-        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
-        res.status(221).json({message:"Updated Succesfully",doc:result})
-    }
-    catch(e){
-        res.status(421).json({message : error.message})
-    }
-})
-router.patch('/updateNumber',async (req,res)=>{
-    const query = {username:req.body.username}
-   
-    
-    const update_doc = {
-        $set:{
-            
-           
-            "mobile" : req.body.mobile
-            
-        }
-    }
-    try{
-        const result = await User.findOneAndUpdate(query,update_doc,{useFindAndModify : false , new:true})
-        res.status(221).json({message:"Updated Succesfully",doc:result})
-    }
-    catch(e){
-        res.status(421).json({message : error.message})
-    }
-})
+
 router.patch('/updateEmail',async (req,res)=>{
     const query = {username:req.body.username}
     
