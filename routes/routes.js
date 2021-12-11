@@ -39,9 +39,6 @@ router.get('/get-users',verify, async (req,res)=>{
 })
 
 router.post('/login', async (req, res)=>{
-    const {error} = loginValidation(req.body)
-    
-    if (error) return res.status(400).send(error.details[0].message)
 
     const user = await User.findOne({username : req.body.username})
     if (!user) return res.status(400).send("Email not found")
@@ -69,9 +66,6 @@ router.post('/login', async (req, res)=>{
 
 
 router.post('/reg_user', async (req, res)=>{
-    const {error} = registerValidation(req.body)
-    
-    if (error) return res.status(400).send(error.details[0].message)
     
 
 
