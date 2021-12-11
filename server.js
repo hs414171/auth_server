@@ -14,8 +14,8 @@ const app = express()
 //     "optionsSuccessStatus": 204
 //   }
   app.use(cors());
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 
 app.get('/',(req,res)=>{
     res.send("Hello World")
