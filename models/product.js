@@ -10,16 +10,16 @@ const Product = mongoose.Schema({
         required : true
     },
     prod_id:{
-        type : String,
+        type : Number,
         required : true
     },
    
     prod_desc:{
-        type : Number,
+        type : String,
         required :true
     },
     prod_price:{
-        type : String,
+        type : Number,
         required : true
     },
     prod_stock:{

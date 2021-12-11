@@ -52,7 +52,6 @@ router.post('/login', async (req, res)=>{
     
     if (!user.verified) return res.send("email not confirmed")
     else{
-        
         const accessToken = jwt.sign({_id : user._id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"2m"})
         const refreshToken = jwt.sign({_id : user._id},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"7d"})
         res.json({accessToken,refreshToken})
@@ -106,7 +105,7 @@ router.post('/reg_user', async (req, res)=>{
             console.log(token2)
             
             
-            const url = `http://localhost:3000/api/user/verification/${token2}`
+            const url = `https://dswproj.herokuapp.com/${token2}`
             const options = {
                 from : process.env.EMAIL_ADDRESS,
                 to : req.body.email,

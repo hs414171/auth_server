@@ -15,9 +15,9 @@
     "gitignore": "^0.7.0",
     "joi-phone-number": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.13.4",
-    "multer": "^1.4.2",
-    "nodemailer": "^6.6.3",
-    "nodemon": "^2.0.12"
+    "mongoose": "^5.13.13",
+    "multer": "^1.4.4",
+    "nodemailer": "^6.7.2",
+    "nodemon": "^2.0.15"
   }
 }
