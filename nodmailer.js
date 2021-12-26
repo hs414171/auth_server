@@ -10,9 +10,7 @@ const nodemailer = require('nodemailer')
 // module.exports = transport
 var transport = nodemailer.createTransport({    
     service: 'Godaddy',
-    host: "smtpout.secureserver.net",  
-    secureConnection: true,
-    port: 465,
+    port: 25,
 
     auth: {
                 user: process.env.EMAIL_ADDRESS,
