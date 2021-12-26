@@ -1,5 +1,7 @@
 require("dotenv").config()
 const nodemailer = require('nodemailer')
+const os = require('os');
+
 // var transport = nodemailer.createTransport({
 //     service: "hotmail",
 //     auth: {
@@ -9,7 +11,7 @@ const nodemailer = require('nodemailer')
 // });
 // module.exports = transport
 var transport = nodemailer.createTransport({    
-    service: 'Godaddy',
+    host: os.hostname(),
     port: 25,
 
     auth: {
